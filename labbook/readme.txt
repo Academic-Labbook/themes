@@ -3,7 +3,7 @@ Contributors: seanleavey
 Tags: custom-background, custom-logo, custom-menu, editor-style, education, sticky-post, theme-options, threaded-comments, translation-ready, two-columns
 Requires at least: 5.0.0
 Tested up to: 5.2.2
-Stable tag: 1.1.11
+Stable tag: 1.1.12
 Requires PHP: 7.0.0
 License: GNU General Public License v3 or later
 License URI: LICENCE
@@ -51,6 +51,9 @@ Labbook supports Academic Labbook Plugin - indeed, use of it is highly encourage
 of features provided in this theme.
 
 == Changelog ==
+
+= 1.1.12 - 2019-09-30 =
+* Fixed revision timezone bug on misconfigured servers.
 
 = 1.1.11 - 2019-08-14 =
 * Fixed text overflow regression introduced in 1.1.10.
