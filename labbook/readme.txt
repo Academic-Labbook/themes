@@ -2,8 +2,8 @@
 Contributors: seanleavey
 Tags: custom-background, custom-logo, custom-menu, editor-style, education, sticky-post, theme-options, threaded-comments, translation-ready, two-columns
 Requires at least: 5.0.0
-Tested up to: 5.2.2
-Stable tag: 1.1.12
+Tested up to: 5.3.2
+Stable tag: 1.1.13
 Requires PHP: 7.0.0
 License: GNU General Public License v3 or later
 License URI: LICENCE
@@ -51,6 +51,12 @@ Labbook supports Academic Labbook Plugin - indeed, use of it is highly encourage
 of features provided in this theme.
 
 == Changelog ==
+
+= 1.1.13 - 2020-02-13 =
+* Removed small gap between site logo and site menu.
+* Fixed border issue with gallery images wrapped in links.
+* Fixed caption font size and formatting when using image block.
+* Fixed icon title when there is a single post author.
 
 = 1.1.12 - 2019-09-30 =
 * Fixed revision timezone bug on misconfigured servers.
