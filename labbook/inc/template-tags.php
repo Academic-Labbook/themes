@@ -404,6 +404,7 @@ if ( ! function_exists( 'labbook_the_authors' ) ) :
 		if ( count( $author_html ) > 1 ) {
 			// There are multiple authors.
 			$icon_class = 'fa fa-users';
+			$author_title = esc_html__( 'Authors', 'labbook' );
 
 			// Get delimiters.
 			$delimiter_between      = _x( ', ', 'delimiter between coauthors except last', 'labbook' );
@@ -417,6 +418,7 @@ if ( ! function_exists( 'labbook_the_authors' ) ) :
 		} else {
 			// Single author.
 			$icon_class = 'fa fa-user';
+			$author_title = esc_html__( 'Author', 'labbook' );
 
 			$author_list_html = $author_html[0];
 		}
@@ -425,7 +427,7 @@ if ( ! function_exists( 'labbook_the_authors' ) ) :
 			printf(
 				'<i class="%1$s" title="%2$s" aria-hidden="true"></i>',
 				esc_attr( $icon_class ),
-				esc_html__( 'Authors', 'labbook' )
+				$author_title
 			);
 		}
 
