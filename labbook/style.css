@@ -656,6 +656,12 @@ th {
     opacity: 0.85; /* Gutenberg default */
 }
 
+/* gallery links */
+#primary .wp-block-gallery a {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
 /*--------------------------------------------------------------
 ## Secondary (sidebar)
 --------------------------------------------------------------*/
