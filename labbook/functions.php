@@ -338,6 +338,9 @@ add_filter( 'the_content', 'labbook_get_content_with_toc' );
 
 /**
  * Check if Academic Labbook Plugin is available on this site.
+ *
+ * Ideally we'd just use the core function is_plugin_active() but this is not
+ * imported by default on the front end.
  */
 function labbook_ssl_alp_active() {
 	$plugin = 'ssl-alp/alp.php';
