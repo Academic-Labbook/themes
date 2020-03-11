@@ -700,7 +700,7 @@ if ( ! function_exists( 'labbook_the_revision_description_row' ) ) :
 			echo '<tr>';
 		}
 
-		echo '<th>'; // Revision.
+		echo '<th class="post-revision-abbr">'; // Revision.
 
 		// Print revision abbreviation.
 		echo wp_kses( $abbr, $allowed_abbr_tags );

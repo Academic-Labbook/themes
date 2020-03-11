@@ -1470,8 +1470,10 @@ a:hover, a:active {
     background-color: #eee;
 }
 
+/* Column styles only support background-color, width, border, and visibility. */
+
 #post-revisions .post-revision-abbr-col {
-    width: 7ch; /* character widths */
+    /* No special style. */
 }
 
 #post-revisions .post-revision-author-col {
@@ -1480,6 +1482,11 @@ a:hover, a:active {
 
 #post-revisions .post-revision-date-col {
     width: 14ch; /* character widths */
+}
+
+#post-revisions .post-revision-abbr {
+    /* Don't break revision ID line. */
+    white-space: nowrap;
 }
 
 #post-revisions .post-revision-author,
