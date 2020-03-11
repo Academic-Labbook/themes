@@ -700,7 +700,7 @@ if ( ! function_exists( 'labbook_the_revision_description_row' ) ) :
 			echo '<tr>';
 		}
 
-		echo '<th>'; // Revision.
+		echo '<th class="post-revision-abbr">'; // Revision.
 
 		// Print revision abbreviation.
 		echo wp_kses( $abbr, $allowed_abbr_tags );
@@ -867,8 +867,8 @@ if ( ! function_exists( 'labbook_the_references' ) ) :
 
 		$post = get_post( $post );
 
-		if ( ! $ssl_alp->references->is_supported( $post ) ) {
-			// Post type not supported.
+		if ( $ssl_alp->references->crossreferences_hidden( $post ) ) {
+			// Post hides cross-references.
 			return;
 		}
 

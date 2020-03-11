@@ -4,7 +4,7 @@ Theme URI: https://alp.attackllama.com/documentation/themes/labbook/
 Author: Sean Leavey
 Author URI: https://attackllama.com/
 Description: Laboratory notebook theme, intended to be used in combination with Academic Labbook Plugin (ALP). ALP adds a whole bunch of features to WordPress to convert it into an electronic laboratory notebook. The Labbook theme enables the display of the front-end features provided by ALP. ALP is currently in beta and can be installed using the instructions here: https://alp.attackllama.com/documentation/installation/.
-Version: 1.1.13
+Version: 1.1.14
 License: GNU General Public License v3 or later
 License URI: LICENSE
 Text Domain: labbook
@@ -461,7 +461,7 @@ code, tt, var {
 
 code {
     display: inline-block; /* display multi-line code nicely */
-    padding: 2px 4px;
+    padding: 0px 4px;
     background-color: #eee;
     border-radius: 2px;
 }
@@ -1470,8 +1470,10 @@ a:hover, a:active {
     background-color: #eee;
 }
 
+/* Column styles only support background-color, width, border, and visibility. */
+
 #post-revisions .post-revision-abbr-col {
-    width: 7ch; /* character widths */
+    /* No special style. */
 }
 
 #post-revisions .post-revision-author-col {
@@ -1480,6 +1482,11 @@ a:hover, a:active {
 
 #post-revisions .post-revision-date-col {
     width: 14ch; /* character widths */
+}
+
+#post-revisions .post-revision-abbr {
+    /* Don't break revision ID line. */
+    white-space: nowrap;
 }
 
 #post-revisions .post-revision-author,

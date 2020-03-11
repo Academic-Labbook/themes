@@ -3,7 +3,7 @@ Contributors: seanleavey
 Tags: custom-background, custom-logo, custom-menu, editor-style, education, sticky-post, theme-options, threaded-comments, translation-ready, two-columns
 Requires at least: 5.0.0
 Tested up to: 5.3.2
-Stable tag: 1.1.13
+Stable tag: 1.1.14
 Requires PHP: 7.0.0
 License: GNU General Public License v3 or later
 License URI: LICENCE
@@ -51,6 +51,19 @@ Labbook supports Academic Labbook Plugin - indeed, use of it is highly encourage
 of features provided in this theme.
 
 == Changelog ==
+
+= 1.1.14 - 2020-03-11 =
+* IMPORTANT: this version now requires at least Academic Labbook Plugin 0.19.0.
+* Added support for Academic Labbook Plugin's hidden cross-references flag. Now
+  if a post has its cross-references hidden, they are not displayed by this
+  theme.
+* Removed top/bottom padding on <code> tags, since this pushed the line height
+  up slightly beyond the standard height when two consecutive lines contained
+  code tags.
+* Fixed issue with table abbr (ID) column line break when ID has more than 4
+  characters width.
+* Mitigated a potential namespace bug when activating the theme on too low a
+  version of WordPress.
 
 = 1.1.13 - 2020-02-13 =
 * Removed small gap between site logo and site menu.
