@@ -461,7 +461,7 @@ code, tt, var {
 
 code {
     display: inline-block; /* display multi-line code nicely */
-    padding: 2px 4px;
+    padding: 0px 4px;
     background-color: #eee;
     border-radius: 2px;
 }
