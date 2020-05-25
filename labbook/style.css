@@ -1609,7 +1609,7 @@ a:hover, a:active {
     min-width: 33%;
 }
 
-.advanced-search-date-range {
+.advanced-search-date-range, .advanced-search-order {
     border: none;
     padding-left: 0;
 }

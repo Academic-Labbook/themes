@@ -1241,6 +1241,13 @@ if ( ! function_exists( 'labbook_the_advanced_search_form' ) ) :
 
 		printf(
 			'<h3>%1$s</h3>',
+			esc_html__( 'Order', 'labbook' )
+		);
+
+		labbook_the_advanced_search_order_fieldset();
+
+		printf(
+			'<h3>%1$s</h3>',
 			esc_html__( 'Authors', 'labbook' )
 		);
 
@@ -1447,6 +1454,43 @@ if ( ! function_exists( 'labbook_the_advanced_search_date_fieldset' ) ) :
 		labbook_the_advanced_search_dropdown( 'ssl_alp_before_year', $years, $selected_before_year );
 		labbook_the_advanced_search_dropdown( 'ssl_alp_before_month', $months, $selected_before_month );
 		labbook_the_advanced_search_dropdown( 'ssl_alp_before_day', $days, $selected_before_day );
+
+		echo '</fieldset>';
+	}
+endif;
+
+if ( ! function_exists( 'labbook_the_advanced_search_order_fieldset' ) ) :
+	/**
+	 * Print the advanced search order fieldset.
+	 */
+	function labbook_the_advanced_search_order_fieldset() {
+		$order_by = array(
+			'date'          => __( 'Post date', 'labbook' ),
+			'modified'      => __( 'Last modified', 'labbook' ),
+			'title'         => __( 'Post title', 'labbook' ),
+			'relevance'     => __( 'Relevance', 'labbook' ),
+			'comment_count' => __( 'Number of comments', 'labbook' ),
+		);
+
+		$order_dir = array(
+			'DESC' => __( 'Descending', 'labbook' ),
+			'ASC'  => __( 'Ascending', 'labbook' ),
+		);
+
+		// Selected order.
+		$selected_order_by  = get_query_var( 'orderby', 'date' );
+		$selected_order_dir = get_query_var( 'order', 'DESC' );
+
+		echo '<fieldset class="advanced-search-order">';
+
+		esc_html_e( 'Order by', 'labbook' );
+		echo '&nbsp;';
+
+		labbook_the_advanced_search_dropdown( 'orderby', $order_by, $selected_order_by, false );
+
+		echo '&nbsp;';
+
+		labbook_the_advanced_search_dropdown( 'order', $order_dir, $selected_order_dir, false );
 
 		echo '</fieldset>';
 	}
