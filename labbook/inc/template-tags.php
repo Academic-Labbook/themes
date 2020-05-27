@@ -232,7 +232,7 @@ if ( ! function_exists( 'labbook_the_post_meta' ) ) :
 			echo '&nbsp;&nbsp;';
 		}
 
-		if ( labbook_get_option( 'show_edit_summaries' ) && labbook_get_post_edit_count( $post ) > 0 ) {
+		if ( labbook_revisions_available_for_post( $post ) ) {
 			// Print revisions link.
 			labbook_the_revisions_link( $post );
 			echo '&nbsp;&nbsp;';
@@ -326,23 +326,8 @@ if ( ! function_exists( 'labbook_the_revisions_link' ) ) :
 	function labbook_the_revisions_link( $post = null ) {
 		global $ssl_alp;
 
-		if ( ! labbook_get_option( 'show_edit_summaries' ) || ! labbook_ssl_alp_edit_summaries_enabled() ) {
-			return;
-		}
-
-		$post = get_post( $post );
-
-		// Check if edit summaries are available for this post.
-		if ( ! $ssl_alp->revisions->edit_summary_allowed( $post, false ) ) {
-			return;
-		}
-
+		$post       = get_post( $post );
 		$edit_count = labbook_get_post_edit_count( $post );
-
-		if ( is_null( $edit_count ) ) {
-			// Revisions not available.
-			return;
-		}
 
 		/* translators: number of revisions */
 		$edit_str = sprintf( _n( '%s revision', '%s revisions', $edit_count, 'labbook' ), $edit_count );
@@ -567,6 +552,12 @@ if ( ! function_exists( 'labbook_the_revisions' ) ) :
 
 		// Check if edit summaries are available for this post.
 		if ( ! $ssl_alp->revisions->edit_summary_allowed( $post, false ) ) {
+			return;
+		}
+
+		// Check if the display of revisions for this particular post has been
+		// disabled.
+		if ( $ssl_alp->revisions->revisions_hidden( $post ) ) {
 			return;
 		}
 
@@ -860,25 +851,10 @@ if ( ! function_exists( 'labbook_the_references' ) ) :
 	function labbook_the_references( $post = null ) {
 		global $ssl_alp;
 
-		if ( ! labbook_get_option( 'show_crossreferences' ) || ! labbook_ssl_alp_crossreferences_enabled() ) {
-			// Display is unavailable.
-			return;
-		}
-
 		$post = get_post( $post );
-
-		if ( $ssl_alp->references->crossreferences_hidden( $post ) ) {
-			// Post hides cross-references.
-			return;
-		}
 
 		$ref_to_posts   = $ssl_alp->references->get_reference_to_posts( $post );
 		$ref_from_posts = $ssl_alp->references->get_reference_from_posts( $post );
-
-		if ( ( ! is_array( $ref_to_posts ) || ! count( $ref_to_posts ) ) && ( ! is_array( $ref_from_posts ) || ! count( $ref_from_posts ) ) ) {
-			// No references.
-			return;
-		}
 
 		echo '<div id="post-references">';
 		echo '<h3>';

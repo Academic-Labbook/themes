@@ -35,5 +35,14 @@
 		?>
 	</div><!-- .entry-content -->
 </article><!-- #post-<?php the_ID(); ?> -->
-<?php labbook_the_references(); ?>
-<?php labbook_the_revisions(); ?>
+<?php
+
+if ( labbook_references_available_for_post() ) {
+	labbook_the_references();
+}
+
+if ( labbook_revisions_available_for_post() ) {
+	labbook_the_revisions();
+}
+
+?>
