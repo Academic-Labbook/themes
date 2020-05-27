@@ -3,7 +3,7 @@ Contributors: seanleavey
 Tags: custom-background, custom-logo, custom-menu, editor-style, education, sticky-post, theme-options, threaded-comments, translation-ready, two-columns
 Requires at least: 5.0.0
 Tested up to: 5.3.2
-Stable tag: 1.1.14
+Stable tag: 1.2.0
 Requires PHP: 7.0.0
 License: GNU General Public License v3 or later
 License URI: LICENCE
@@ -51,6 +51,16 @@ Labbook supports Academic Labbook Plugin - indeed, use of it is highly encourage
 of features provided in this theme.
 
 == Changelog ==
+
+= 1.2.0 - 2020-05-27 =
+* IMPORTANT: this version now requires at least Academic Labbook Plugin 0.20.0.
+* Added support for Academic Labbook Plugin's hidden revisions flag. Now if a
+  post has its revisions count/list hidden, they are not displayed by this
+  theme.
+* Allowed order to be set in advanced search, allowing ordering by post date,
+  title, etc.
+* Fixed bugs with navigation menus on small screens (props adf).
+* Fix bug with network navigation menu on small screens (props adf)
 
 = 1.1.14 - 2020-03-11 =
 * IMPORTANT: this version now requires at least Academic Labbook Plugin 0.19.0.

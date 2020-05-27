@@ -27,7 +27,7 @@
 	<header id="masthead" class="site-header">
 		<?php if ( has_nav_menu( 'network-menu' ) ) : ?>
 		<nav id="network-navigation" class="main-navigation">
-			<button class="menu-toggle" aria-controls="network-menu" aria-expanded="false"><?php esc_html_e( 'Network Menu', 'labbook' ); ?></button>
+			<button class="menu-toggle" aria-controls="network-menu" aria-expanded="false"><?php esc_html_e( wp_get_nav_menu_name( 'network-menu' ) ); ?></button>
 			<?php
 			wp_nav_menu(
 				array(
@@ -58,7 +58,7 @@
 		</div><!-- .site-branding -->
 
 		<nav id="site-navigation" class="main-navigation">
-			<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Primary Menu', 'labbook' ); ?></button>
+			<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( wp_get_nav_menu_name( 'site-menu' ) ); ?></button>
 			<?php
 			wp_nav_menu(
 				array(
