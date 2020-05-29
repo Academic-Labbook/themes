@@ -9,16 +9,22 @@ by Nilambar Sharma, but the templates are not based on Simple Life's code; rathe
 boilerplate code provided by [Underscores](https://underscores.me/).
 
 Features:
- - Displays multiple authors
- - Displays revision history under posts and pages
- - Displays breadcrumb trail on pages showing page hierarchy
- - Displays table of contents on pages based on page headings
- - Provides users sidebar widget showing links to view lists of each authors' posts, including those
-   coauthored
- - Provides recent revisions sidebar widget showing recently edited posts and pages
- - Shows cross-references (links in the post body) between posts and pages under each post or page
- - Allows posts to be set as read or unread
- - Supports display of an institute logo and icon
- - Provides two menu locations for providing links to site or external pages or URLs
- - Provides customisable copyright notice and ability to hide branding
- - Responsive to screen size: viewable on mobile, tablet and desktop browsers
+
+ - Displays multiple authors.
+ - Displays revision history under posts and pages.
+ - Displays breadcrumb trail on pages showing page hierarchy.
+ - Displays table of contents on pages based on page headings.
+ - Allows post display to be configured as full or excerpt mode, and allows users to override this
+   themselves.
+ - Shows cross-references (links in the post body) between posts and pages under each post or page.
+ - Allows posts to be set as read or unread.
+ - Supports display of an institute logo and icon.
+ - Provides two menu locations for providing links to site or external pages or URLs.
+ - Provides customisable copyright notice and ability to hide branding.
+ - Responsive to screen size: viewable on mobile, tablet and desktop browsers.
+
+### Cookies
+Labbook stores the cookie `labbook_recent_posts_content_layout_mode` in users' browsers if they set
+a custom layout mode via the admin bar (only available to logged-in users). The value of this
+cookie can only be 'full' or 'excerpt' and therefore contains no personally identifiable
+information.

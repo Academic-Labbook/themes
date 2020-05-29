@@ -24,7 +24,7 @@
 	<?php
 	if ( 'status' === get_post_format() ) :
 		// Do nothing.
-	elseif ( 'excerpt' === labbook_get_option( 'content_layout' ) ) :
+	elseif ( 'excerpt' === labbook_content_layout_mode() ) :
 	?>
 	<div class="entry-summary">
 		<?php the_excerpt(); ?>
