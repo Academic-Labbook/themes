@@ -2,8 +2,8 @@
 Contributors: seanleavey
 Tags: custom-background, custom-logo, custom-menu, editor-style, education, sticky-post, theme-options, threaded-comments, translation-ready, two-columns
 Requires at least: 5.0.0
-Tested up to: 5.3.2
-Stable tag: 1.2.0
+Tested up to: 5.4.1
+Stable tag: 1.2.1
 Requires PHP: 7.0.0
 License: GNU General Public License v3 or later
 License URI: LICENCE
@@ -51,6 +51,10 @@ Labbook supports Academic Labbook Plugin - indeed, use of it is highly encourage
 of features provided in this theme.
 
 == Changelog ==
+
+= 1.2.1 - 2020-05-29 =
+* Added the ability for logged-in users to override the default post display mode via the admin bar.
+* Fixed content area not expanding to fill all horizontal space when no sidebar is present.
 
 = 1.2.0 - 2020-05-27 =
 * IMPORTANT: this version now requires at least Academic Labbook Plugin 0.20.0.

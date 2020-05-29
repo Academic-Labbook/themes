@@ -41,7 +41,7 @@ function labbook_customize_register( $wp_customize ) {
 		'labbook_options[content_layout]',
 		array(
 			'label'       => __( 'Post Display', 'labbook' ),
-			'description' => __( 'Determines how much post content is displayed in lists. Post pages always show the full content.', 'labbook' ),
+			'description' => __( 'Determines how much post content is displayed in lists. Post pages always show the full content. Logged-in users may override this setting for the main and archive post listsusing the link in the admin bar.', 'labbook' ),
 			'section'     => 'labbook_post_list_options',
 			'type'        => 'select',
 			'priority'    => 120,

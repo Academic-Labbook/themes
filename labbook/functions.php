@@ -8,10 +8,13 @@
  */
 
 // Theme version.
-define( 'LABBOOK_VERSION', '1.2.0' );
+define( 'LABBOOK_VERSION', '1.2.1' );
 
 // Required PHP version.
 define( 'LABBOOK_MINIMUM_PHP_VERSION', '7.0.0' );
+
+// Allowed content layout modes.
+$allowed_content_layout_modes = array( 'excerpt', 'full' );
 
 if ( ! function_exists( 'labbook_version_too_low_admin_notice' ) ) :
 	/**
@@ -338,6 +341,143 @@ if ( ! function_exists( 'labbook_get_content_with_toc' ) ) :
 endif;
 add_filter( 'the_content', 'labbook_get_content_with_toc' );
 
+if ( ! function_exists( 'labbook_add_content_layout_mode_admin_bar_menu' ) ) :
+	/**
+	 * Add link to control the user's content layout mode in admin bar.
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar The admin bar.
+	 */
+	function labbook_add_content_layout_mode_admin_bar_menu( $admin_bar ) {
+		if ( ! labbook_is_content_layout_mode_applicable() ) {
+			return;
+		}
+
+		$current_url  = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		$current_user = ( is_user_logged_in() ) ? wp_get_current_user() : null;
+
+		if ( is_null( $current_user ) ) {
+			return;
+		}
+
+		$mode = labbook_content_layout_mode();
+
+		if ( 'excerpt' === $mode ) {
+			$set_mode = 'full';
+			$title = __( 'Show Full Posts', 'labbook' );
+			$description = __( 'Show full posts instead of short excerpts in the main post list', 'labbook' );
+		} else {
+			$set_mode = 'excerpt';
+			$title = __( 'Show Post Excerpts', 'labbook' );
+			$description = __( 'Show short excerpts instead of full posts in the main post list', 'labbook' );
+		}
+
+		$admin_bar->add_menu(
+			array(
+				'parent' => 'top-secondary', // On the right side.
+				'id'     => 'labbook-theme-settings',
+				'title'  => __( 'Display', 'labbook' ),
+			)
+		);
+
+		// Toggle layout mode link.
+		$admin_bar->add_node(
+			array(
+				'parent' => 'labbook-theme-settings',
+				'id'     => 'labbook-toggle-content-layout-mode',
+				'title'  => esc_html( $title ),
+				'meta'   => array(
+					'title' => esc_html( $description ),
+				),
+				'href'   => add_query_arg(
+					array(
+						'labbook_recent_posts_content_layout_mode' => $set_mode,
+						'redirect_to'                              => $current_url,
+					)
+				),
+			)
+		);
+
+		// Reset to default layout link.
+		$admin_bar->add_node(
+			array(
+				'parent' => 'labbook-theme-settings',
+				'id'     => 'labbook-reset-content-layout-mode',
+				'title'  => esc_html__( 'Reset Layout Mode', 'labbook' ),
+				'meta'   => array(
+					'title' => esc_html__( 'Reset the layout mode to the default.', 'labbook' ),
+				),
+				'href'   => add_query_arg(
+					array(
+						'labbook_recent_posts_content_layout_mode' => 'default',
+						'redirect_to'                              => $current_url,
+					)
+				),
+			)
+		);
+	}
+endif;
+add_filter( 'admin_bar_menu', 'labbook_add_content_layout_mode_admin_bar_menu' );
+
+
+if ( ! function_exists( 'labbook_handle_toggle_content_layout_mode' ) ) :
+	/**
+	 * Handle when the user requests to toggle the post display setting.
+	 */
+	function labbook_handle_toggle_content_layout_mode() {
+		global $allowed_content_layout_modes;
+
+		if ( ! labbook_is_content_layout_mode_applicable() ) {
+			return;
+		}
+
+		if ( ! array_key_exists( 'labbook_recent_posts_content_layout_mode', $_REQUEST ) ) {
+			return;
+		}
+
+		$current_user = ( is_user_logged_in() ) ? wp_get_current_user() : null;
+
+		if ( is_null( $current_user ) ) {
+			return;
+		}
+
+		$mode = sanitize_key( $_REQUEST['labbook_recent_posts_content_layout_mode'] );
+
+		if ( in_array( $mode, $allowed_content_layout_modes, true ) ) {
+			// Set a very long cookie.
+			setcookie( 'labbook_recent_posts_content_layout_mode', $mode, time() + 10 * YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN );
+		} elseif ( 'default' === $mode ) {
+			// User wants to reset to the theme default. Delete the cookie.
+			if ( array_key_exists( 'labbook_recent_posts_content_layout_mode', $_COOKIE ) ) {
+				unset( $_COOKIE['labbook_recent_posts_content_layout_mode'] );
+			}
+
+			// Use null cookie value and set to expire in the past.
+			setcookie( 'labbook_recent_posts_content_layout_mode', '', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN );
+		}
+
+		if ( ! empty( $_REQUEST['redirect_to'] ) ) {
+			$redirect_to = remove_query_arg(
+				wp_removable_query_args(),
+				wp_unslash( $_REQUEST['redirect_to'] )
+			);
+		} else {
+			$redirect_to = '';
+		}
+
+		$application = 'WordPress/Labbook Theme Toggle Post Display';
+
+		if ( $redirect_to ) {
+			// Send user back to where they were.
+			wp_safe_redirect( $redirect_to, 302, $application );
+		} else {
+			// Send user to front page.
+			wp_safe_redirect( home_url(), 302, $application );
+		}
+		exit;
+	}
+endif;
+add_filter( 'init', 'labbook_handle_toggle_content_layout_mode' );
+
 /**
  * Check if Academic Labbook Plugin is available on this site.
  *
@@ -358,6 +498,48 @@ function labbook_ssl_alp_active() {
 	}
 
 	return $blog_active || $network_active;
+}
+
+if ( ! function_exists( 'labbook_is_content_layout_mode_applicable' ) ) :
+	/**
+	 * Check if the current page is applicable to having a content layout mode.
+	 *
+	 * Content layout modes are applicable on post lists, but not search results,
+	 * and not in the Customizer (where it would cause confusion to use the current
+	 * user's setting and not the default theme setting).
+	 */
+	function labbook_is_content_layout_mode_applicable() {
+		if ( is_single() || is_search() || is_customize_preview() || ! is_admin_bar_showing() || get_query_var( 'labbook_advanced_search' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+endif;
+
+/**
+ * Get the content layout mode, used to determine whether to show full posts or
+ * excerpts in post lists.
+ *
+ * If the user has set their own setting, this returns that; otherwise, the
+ * theme setting is used.
+ */
+function labbook_content_layout_mode() {
+	global $allowed_content_layout_modes;
+
+	if ( labbook_is_content_layout_mode_applicable() ) {
+		$current_user = ( is_user_logged_in() ) ? wp_get_current_user() : null;
+
+		if ( ! is_null( $current_user ) && array_key_exists( 'labbook_recent_posts_content_layout_mode', $_COOKIE ) ) {
+			$mode = sanitize_key( $_COOKIE['labbook_recent_posts_content_layout_mode'] );
+
+			if ( ! empty( $mode ) && in_array( $mode, $allowed_content_layout_modes, true ) ) {
+				return $mode;
+			}
+		}
+	}
+
+	return labbook_get_option( 'content_layout' );
 }
 
 /**
