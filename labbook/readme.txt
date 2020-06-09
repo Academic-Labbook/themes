@@ -3,7 +3,7 @@ Contributors: seanleavey
 Tags: custom-background, custom-logo, custom-menu, editor-style, education, sticky-post, theme-options, threaded-comments, translation-ready, two-columns
 Requires at least: 5.0.0
 Tested up to: 5.4.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 Requires PHP: 7.0.0
 License: GNU General Public License v3 or later
 License URI: LICENCE
@@ -51,6 +51,13 @@ Labbook supports Academic Labbook Plugin - indeed, use of it is highly encourage
 of features provided in this theme.
 
 == Changelog ==
+
+= 1.2.2 - 2020-06-09 =
+* Fixed bug whereby two revisions made at the same time would appear as "Current" in the table under
+  the post.
+* Removed unused CSS class.
+* Stopped the post list display settings menu appearing on admin screens.
+* Updated URLs to https://alp.attackllama.com/.
 
 = 1.2.1 - 2020-05-29 =
 * Added the ability for logged-in users to override the default post display mode via the admin bar.
