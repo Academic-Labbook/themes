@@ -1476,7 +1476,6 @@ a:hover, a:active {
 }
 
 #post-revisions tr.post-revision-current,
-#post-revisions tr.post-revision-autosave,
 #post-revisions tr.post-revision-original {
     background-color: #eee;
 }
