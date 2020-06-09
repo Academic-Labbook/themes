@@ -31,7 +31,7 @@ If used in combination with Academic Labbook Plugin, extra features such as disp
 revisions and cross-references are enabled.
 
 Note that Academic Labbook Plugin is still in beta and not yet available on WordPress.org. If you
-wish to obtain it, you must download and install it manually (see [instructions](https://alp.attackllama.com/documentation/installation/)).
+wish to obtain it, you must download and install it manually (see [instructions](https://alp.attackllama.com/documentation/for-administrators/installation/)).
 
 == Installation ==
 
