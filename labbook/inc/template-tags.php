@@ -574,12 +574,43 @@ if ( ! function_exists( 'labbook_the_revisions' ) ) :
 		$per_page = labbook_get_option( 'edit_summaries_per_page' );
 		$pages    = ceil( $count / $per_page );
 
-		// Get list of revisions to this post.
+		// Get list of revisions to this post (excluding autosaves).
 		$revisions = labbook_get_revisions( $post, $current_page, $per_page );
 
 		if ( is_null( $revisions ) || ! is_array( $revisions ) || 0 === count( $revisions ) ) {
 			// No revisions to show.
 			return;
+		}
+
+		// Allowed revision abbreviation tags.
+		$allowed_abbr_tags = array(
+			'a' => array(
+				'href'  => array(),
+				'title' => array(),
+			),
+		);
+
+		$rowdata = array_map( 'labbook_get_revision_description_row', $revisions );
+
+		// Get rid of duplicate current posts.
+		$current_row_key = false;
+
+		foreach ( $rowdata as $key => $data ) {
+			if ( 'current' === $data['status'] ) {
+				if ( ! empty( $current_row_key ) ) {
+					// Multiple revisions claim to be current due to their modified time. Choose the
+					// one with the highest ID. This is the same way WordPress does it in
+					// wp_prepare_revisions_for_js.
+					if ( (int) $rowdata[ $current_row_key ]['revision']->ID < (int) $data['revision']->ID ) {
+						$rowdata[ $current_row_key ]['status'] = 'intermediate';
+						$current_row_key = $key;
+					} else {
+						$rowdata [ $key ]['status'] = 'intermediate';
+					}
+				} else {
+					$current_row_key = $key;
+				}
+			}
 		}
 
 		echo '<div id="post-revisions">';
@@ -605,13 +636,91 @@ if ( ! function_exists( 'labbook_the_revisions' ) ) :
 				</tr>
 			</thead>
 			<tbody>
-		<?php
+			<?php foreach ( $rowdata as $row ): ?>
+				<?php if ( 'current' === $row['status'] ) : ?>
+				<tr class="post-revision-current">
+				<?php elseif ( 'original' === $row['status'] ) : ?>
+				<tr class="post-revision-original">
+				<?php else : ?>
+				<tr>
+					<?php endif; ?>
+					<th class="post-revision-abbr">
+					<?php
+					// Print revision abbreviation.
+					echo wp_kses( $row['abbr'], $allowed_abbr_tags );
+					?>
+					</th>
+					<td class="post-revision-date">
+					<?php
+					// Print date.
+					printf(
+						'<span title="%1$s">%2$s</span>',
+						esc_attr( get_the_modified_date( labbook_get_date_format( true ), $row['revision'] ) ),
+						esc_html( labbook_get_post_human_time_diff( $row['revision'], true ) )
+					);
+					?>
+					</td>
+					<td class="post-revision-author">
+					<?php
+					if ( ! is_null( $row['author'] ) ) {
+						// Print author link.
+						echo labbook_format_author( $row['author'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
+					</td>
+					<td>
+					<?php if ( ! empty( $row['summary'] ) ) : ?>
+						<em><?php esc_html_e( $row['summary'] ); ?></em>&nbsp;
+					<?php endif; ?>
+					<?php
+					if ( ! empty( $row['revert_id'] ) ) {
+						// Revision was a revert.
+						$source_abbr = labbook_get_revision_abbreviation( $row['revert_id'] );
 
-		foreach ( $revisions as $revision ) {
-			labbook_the_revision_description_row( $revision );
-		}
+						if ( is_null( $source_abbr ) ) {
+							// Source revision is invalid.
+							/* translators: reverted to unknown revision */
+							esc_html_e( 'reverted', 'labbook' );
+						} else {
+							printf(
+								/* translators: 1: reverted revision ID */
+								esc_html__( 'reverted to %1$s', 'labbook' ),
+								wp_kses( $source_abbr, $allowed_abbr_tags )
+							);
+						}
 
-		?>
+						echo '&nbsp;';
+
+						if ( ! empty( $row['source_summary'] ) ) {
+							// Add original edit summary.
+							echo '<em>';
+							printf(
+								/* translators: 1: edit summary of post reverted to */
+								esc_html__( '("%1$s")', 'labbook' ),
+								esc_html( $row['source_summary'] )
+							);
+							echo '</em>';
+							echo '&nbsp;';
+						}
+					}
+					?>
+
+					<?php if ( 'intermediate' !== $row['status'] ) : ?>
+						<strong>
+							<?php
+							if ( 'current' === $row['status'] ) {
+								/* translators: current post */
+								esc_html_e( '(current)', 'labbook' );
+							} elseif ( 'original' === $row['status'] ) {
+								/* translators: original published post */
+								esc_html_e( '(original)', 'labbook' );
+							}
+							?>
+						</strong>
+					<?php endif; ?>
+					</td>
+				</tr>
+				<?php endforeach; ?>
 			</tbody>
 		</table>
 		<?php
@@ -631,13 +740,15 @@ if ( ! function_exists( 'labbook_the_revisions' ) ) :
 	}
 endif;
 
-if ( ! function_exists( 'labbook_the_revision_description_row' ) ) :
+if ( ! function_exists( 'labbook_get_revision_description_row' ) ) :
 	/**
-	 * Print description for the specified revision in a table row.
+	 * Get description for the specified revision in a table row.
 	 *
-	 * @param int|WP_Post $revision The revision.
+	 * @param WP_Post|int $revision The revision object or ID.
+	 * @return array|null Array containing the column values for this revision, or null if the
+	 * 					  revision is null or not a revision.
 	 */
-	function labbook_the_revision_description_row( $revision ) {
+	function labbook_get_revision_description_row( $revision ) {
 		global $ssl_alp;
 
 		// Get revision object if id is specified.
@@ -651,130 +762,39 @@ if ( ! function_exists( 'labbook_the_revision_description_row' ) ) :
 			return;
 		}
 
-		// Get revision's edit summary.
-		$edit_data = $ssl_alp->revisions->get_revision_edit_summary( $revision );
-
 		// Revision abbreviation, e.g. r101, with link to diff.
 		$abbr = labbook_get_revision_abbreviation( $revision );
-
-		// Allowed revision abbreviation tags.
-		$allowed_abbr_tags = array(
-			'a' => array(
-				'href'  => array(),
-				'title' => array(),
-			),
-		);
-
-		// Whether the revision is the latest update to the parent.
-		$is_current = get_the_time( 'U', $revision ) === get_the_modified_time( 'U', $revision->parent );
-
-		// Whether the revision is an autosave.
-		$is_autosave = wp_is_post_autosave( $revision );
-
-		// Whether the revision was created when the post was published.
-		$is_original = labbook_revision_was_autogenerated_on_publication( $revision );
 
 		if ( is_null( $abbr ) ) {
 			// Invalid.
 			return;
 		}
 
-		$author = get_user_by( 'ID', $revision->post_author );
-
-		if ( $is_current ) {
-			echo '<tr class="post-revision-current">';
-		} elseif ( $is_autosave ) {
-			echo '<tr class="post-revision-autosave">';
-		} elseif ( $is_original ) {
-			echo '<tr class="post-revision-original">';
-		} else {
-			echo '<tr>';
-		}
-
-		echo '<th class="post-revision-abbr">'; // Revision.
-
-		// Print revision abbreviation.
-		echo wp_kses( $abbr, $allowed_abbr_tags );
-
-		echo '</th>';
-		echo '<td class="post-revision-date">'; // Date.
-
-		// Print date.
-		printf(
-			'<span title="%1$s">%2$s</span>',
-			esc_attr( get_the_modified_date( labbook_get_date_format( true ), $revision ) ),
-			esc_html( labbook_get_post_human_time_diff( $revision, true ) )
+		$data = array(
+			'revision' => $revision,
+			'abbr'     => $abbr,
+			'author'   => get_user_by( 'ID', $revision->post_author ),
 		);
 
-		echo '</td>';
-		echo '<td class="post-revision-author">'; // Author.
-
-		if ( $author ) {
-			// Print author link.
-			echo labbook_format_author( $author ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		if ( get_the_time( 'U', $revision ) === get_the_modified_time( 'U', $revision->parent ) ) {
+			// The revision is the latest update to the parent.
+			$data['status'] = 'current';
+		} elseif ( labbook_revision_was_autogenerated_on_publication( $revision ) ) {
+			// The revision was created when the post was published.
+			$data['status'] = 'original';
+		} else {
+			// The revision is an intermediate one: not the original, not the current.
+			$data['status'] = 'intermediate';
 		}
 
-		echo '</td>';
-		echo '<td>'; // Information.
+		// Get revision's edit summary.
+		$edit_data = $ssl_alp->revisions->get_revision_edit_summary( $revision );
 
-		if ( ! empty( $edit_data['summary'] ) ) {
-			// Print the edit summary.
-			echo '<em>';
-			echo esc_html( $edit_data['summary'] );
-			echo '</em>';
-			echo '&nbsp';
-		}
+		$data['summary']        = $edit_data['summary'];
+		$data['revert_id']      = $edit_data['revert_id'];
+		$data['source_summary'] = $edit_data['source_summary'];
 
-		if ( ! empty( $edit_data['revert_id'] ) ) {
-			// Revision was a revert.
-			$source_abbr = labbook_get_revision_abbreviation( $edit_data['revert_id'] );
-
-			if ( is_null( $source_abbr ) ) {
-				// Source revision is invalid.
-				/* translators: reverted to unknown revision */
-				esc_html_e( 'reverted', 'labbook' );
-			} else {
-				printf(
-					/* translators: 1: reverted revision ID */
-					esc_html__( 'reverted to %1$s', 'labbook' ),
-					wp_kses( $source_abbr, $allowed_abbr_tags )
-				);
-			}
-
-			echo '&nbsp;';
-
-			if ( ! empty( $edit_data['source_summary'] ) ) {
-				// Add original edit summary.
-				echo '<em>';
-				printf(
-					/* translators: 1: edit summary of post reverted to */
-					esc_html__( '("%1$s")', 'labbook' ),
-					esc_html( $edit_data['source_summary'] )
-				);
-				echo '</em>';
-				echo '&nbsp;';
-			}
-		}
-
-		if ( $is_current ) {
-			echo '<strong>';
-			/* translators: current revision */
-			esc_html_e( '(current)', 'labbook' );
-			echo '</strong>';
-		} elseif ( $is_autosave ) {
-			echo '<strong>';
-			/* translators: autosaved post */
-			esc_html_e( '(autosave)', 'labbook' );
-			echo '</strong>';
-		} elseif ( $is_original ) {
-			echo '<strong>';
-			/* translators: original published post */
-			esc_html_e( '(original)', 'labbook' );
-			echo '</strong>';
-		}
-
-		echo '</td>';
-		echo '</tr>';
+		return $data;
 	}
 endif;
 

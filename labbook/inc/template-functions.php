@@ -212,7 +212,8 @@ if ( ! function_exists( 'labbook_get_revisions' ) ) :
 			array(
 				'paged'          => $page,
 				'posts_per_page' => $per_page,
-			)
+			),
+			false
 		);
 
 		return $revisions;
