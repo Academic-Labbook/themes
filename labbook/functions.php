@@ -509,7 +509,7 @@ if ( ! function_exists( 'labbook_is_content_layout_mode_applicable' ) ) :
 	 * user's setting and not the default theme setting).
 	 */
 	function labbook_is_content_layout_mode_applicable() {
-		if ( is_single() || is_search() || is_customize_preview() || ! is_admin_bar_showing() || get_query_var( 'labbook_advanced_search' ) ) {
+		if ( is_single() || is_search() || is_customize_preview() || is_admin() || ! is_admin_bar_showing() || get_query_var( 'labbook_advanced_search' ) ) {
 			return false;
 		}
 
