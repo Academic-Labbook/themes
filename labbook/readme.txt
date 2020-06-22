@@ -2,8 +2,8 @@
 Contributors: seanleavey
 Tags: custom-background, custom-logo, custom-menu, editor-style, education, sticky-post, theme-options, threaded-comments, translation-ready, two-columns
 Requires at least: 5.0.0
-Tested up to: 5.4.1
-Stable tag: 1.2.2
+Tested up to: 5.4.2
+Stable tag: 1.2.3
 Requires PHP: 7.0.0
 License: GNU General Public License v3 or later
 License URI: LICENCE
@@ -51,6 +51,9 @@ Labbook supports Academic Labbook Plugin - indeed, use of it is highly encourage
 of features provided in this theme.
 
 == Changelog ==
+
+= 1.2.3 - 2020-06-22 =
+* Fixed overflow bug when content in a post or page was wider than the available column space.
 
 = 1.2.2 - 2020-06-09 =
 * Fixed bug whereby two revisions made at the same time would appear as "Current" in the table under
