@@ -603,41 +603,38 @@ th {
         "header"
         "middle"
         "footer";
-}
-
-/* Small devices (e.g. tablets) and above */
-@media screen and (min-width: 768px) {
-    #middle {
-        flex-wrap: nowrap;
-    }
-
-    #primary {
-        flex: 1 0 0; /* Grow to fill available space in container. */
-        width: inherit; /* Overrides 100% for smaller screens. */
-    }
-
-    #page {
-        grid-gap: 20px;
-    }
-
-    #secondary {
-        flex-basis: 250px; /* Width, essentially. */
-        margin-left: 20px; /* Same as #page grid-gap. */
-    }
-}
-
-/* Medium devices (desktops) and above */
-@media screen and (min-width: 992px) {
-    #secondary {
-        flex-basis: 350px; /* Width, essentially. */
-    }
+    grid-gap: 20px;
 }
 
 /* Defaults for smallest screens; overridden for larger screens. */
 #middle {
     grid-area: middle;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    /* Middle grid: on smallest screens, display items in rows at full width.
+       On larger screens, display items in columns and apply a max width to the
+       additional columns. In practice only one column is usually present, the
+       sidebar, and it is given a fixed width by the @media selectors below. */
+    grid-gap: 20px;
+    grid-auto-rows: auto;
+    grid-auto-flow: row;
+}
+
+/* Small devices (e.g. tablets) and above */
+@media screen and (min-width: 768px) {
+    #middle {
+        /* Flow new items into columns instead of rows (the default for small
+           screens). */
+        grid-auto-flow: column;
+        grid-auto-columns: 250px;
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Medium devices (desktops) and above */
+@media screen and (min-width: 992px) {
+    #middle {
+        grid-auto-columns: 350px;
+    }
 }
 
 /*--------------------------------------------------------------
@@ -645,7 +642,7 @@ th {
 --------------------------------------------------------------*/
 
 #primary {
-    width: 100%; /* Overridden for larger screens. */
+    overflow: hidden;
 }
 
 #primary a {
