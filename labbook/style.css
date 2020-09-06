@@ -397,11 +397,6 @@ template {
 /*--------------------------------------------------------------
 # Typography
 --------------------------------------------------------------*/
-body {
-    /* Wrap long words mid-word if necessary to prevent overflow. */
-    overflow-wrap: anywhere;
-}
-
 body,
 button,
 input,
@@ -562,15 +557,17 @@ dd {
 }
 
 img {
-    height: auto;
     /* Make sure images are scaled correctly. */
-    max-width: 100%;
+    height: auto;
     /* Adhere to container width. */
+    max-width: 100%;
+
 }
 
 figure {
     margin: 1em 0;
-    /* Extra wide images within figure tags don't overflow the content area. */
+    /* Adhere to container width. */
+    max-width: 100%;
 }
 
 table {
