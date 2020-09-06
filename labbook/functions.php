@@ -8,7 +8,7 @@
  */
 
 // Theme version.
-define( 'LABBOOK_VERSION', '1.2.3' );
+define( 'LABBOOK_VERSION', '1.2.4' );
 
 // Required PHP version.
 define( 'LABBOOK_MINIMUM_PHP_VERSION', '7.0.0' );
@@ -514,6 +514,39 @@ if ( ! function_exists( 'labbook_is_content_layout_mode_applicable' ) ) :
 		}
 
 		return true;
+	}
+endif;
+
+if ( ! function_exists( 'labbook_allowed_comment_html' ) ) :
+	/**
+	 * Get allowed comment HTML.
+	 *
+	 * Based on core `allowed_tags` function but returns an array of tags
+	 * instead of a string.
+	 *
+	 * @global $allowedtags
+	 * @return array Escaped allowed HTML.
+	 */
+	function labbook_allowed_comment_html() {
+		global $allowedtags;
+
+		$allowed = array();
+
+		foreach ( (array) $allowedtags as $tag => $attributes ) {
+			$html = '<' . $tag;
+
+			if ( 0 < count( $attributes ) ) {
+				foreach ( $attributes as $attribute => $limits ) {
+					$html .= ' ' . $attribute . '=""';
+				}
+			}
+
+			$html .= '>';
+
+			$allowed[] = esc_html( $html );
+		}
+
+		return $allowed;
 	}
 endif;
 

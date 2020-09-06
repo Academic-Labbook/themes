@@ -1028,15 +1028,21 @@ if ( ! function_exists( 'labbook_the_inventory_breadcrumbs' ) ) :
 			return;
 		}
 
-		$breadcrumbs = array(
-			array(
-				'title' => __( 'Home', 'labbook' ),
-				'url'   => home_url(),
-			),
-			array(
-				'title' => __( 'Inventory', 'labbook' ),
-			),
-		);
+		$breadcrumbs = labbook_get_page_breadcrumbs( $post );
+
+		if ( ! empty( $breadcrumbs ) ) {
+			// Insert "Inventory" after the first breadcrumb.
+			array_splice(
+				$breadcrumbs,
+				1,
+				0,
+				array(
+					array(
+						'title' => __( 'Inventory', 'labbook' ),
+					),
+				)
+			);
+		}
 
 		labbook_the_breadcrumb_trail( $breadcrumbs );
 	}

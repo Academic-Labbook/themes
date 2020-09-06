@@ -82,7 +82,29 @@ if ( post_password_required() ) {
 
 	endif; // Check for have_comments().
 
-	comment_form();
+	$labbook_allowed_comment_snippets = array();
+
+	foreach ( labbook_allowed_comment_html() as $allowed_html ) {
+		$labbook_allowed_comment_snippets[] = '<code>' . $allowed_html . '</code>';
+	}
+
+	$labbook_allowed_comment_html_tags = implode( ', ', $labbook_allowed_comment_snippets );
+
+	comment_form(
+		array(
+			'comment_notes_after' => wp_kses_post(
+				sprintf(
+					__(
+						'<span class="comment-hint"><p>Supported comment tags and attributes: %1$s.</p><p>Hint: media files can be attached to comments by first uploading them to the <a href="%3$s">media library</a>. A link can be made using <code>%2$s</code> where <code>...</code> is the URL copied from the details for the uploaded file.</p></span>',
+						'labbook'
+					),
+					$labbook_allowed_comment_html_tags,
+					esc_html__( '<a href="...">link text</a>', 'labbook' ),
+					admin_url( 'upload.php' )
+				)
+			),
+		)
+	);
 	?>
 
 </div><!-- #comments -->
