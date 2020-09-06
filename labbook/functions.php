@@ -517,6 +517,39 @@ if ( ! function_exists( 'labbook_is_content_layout_mode_applicable' ) ) :
 	}
 endif;
 
+if ( ! function_exists( 'labbook_allowed_comment_html' ) ) :
+	/**
+	 * Get allowed comment HTML.
+	 *
+	 * Based on core `allowed_tags` function but returns an array of tags
+	 * instead of a string.
+	 *
+	 * @global $allowedtags
+	 * @return array Escaped allowed HTML.
+	 */
+	function labbook_allowed_comment_html() {
+		global $allowedtags;
+
+		$allowed = array();
+
+		foreach ( (array) $allowedtags as $tag => $attributes ) {
+			$html = '<' . $tag;
+
+			if ( 0 < count( $attributes ) ) {
+				foreach ( $attributes as $attribute => $limits ) {
+					$html .= ' ' . $attribute . '=""';
+				}
+			}
+
+			$html .= '>';
+
+			$allowed[] = esc_html( $html );
+		}
+
+		return $allowed;
+	}
+endif;
+
 /**
  * Get the content layout mode, used to determine whether to show full posts or
  * excerpts in post lists.
