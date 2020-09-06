@@ -3,7 +3,7 @@ Contributors: seanleavey
 Tags: custom-background, custom-logo, custom-menu, editor-style, education, sticky-post, theme-options, threaded-comments, translation-ready, two-columns
 Requires at least: 5.0.0
 Tested up to: 5.4.2
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 Requires PHP: 7.0.0
 License: GNU General Public License v3 or later
 License URI: LICENCE
@@ -51,6 +51,12 @@ Labbook supports Academic Labbook Plugin - indeed, use of it is highly encourage
 of features provided in this theme.
 
 == Changelog ==
+
+= 1.2.4 - 2020-09-06 =
+* Added support for hierarchical inventories in ALP.
+* Increased margin between "Reply to x" and "Cancel reply" on comment form.
+* Added hint to comment form describing how to add links to media and available HTML tags.
+* Fixed captioned image and text overflow wrapping.
 
 = 1.2.3 - 2020-06-22 =
 * Fixed overflow bug when content in a post or page was wider than the available column space.
